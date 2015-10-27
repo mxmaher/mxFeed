@@ -1,0 +1,107 @@
+#!/usr/bin/python
+
+
+'''minimal Facebook Newsfeed in the Terminal'''
+
+from graph import Graph
+from view import FeedView
+import FBlogin
+import utils
+
+import argparse
+import sys
+
+
+def token(permissions):
+    '''get an access_token'''
+    login = FBlogin.login()
+    login.getCode(permissions)
+    res = login.getAccessToken()
+    return res['access_token']
+
+def main():
+    #TODO make it cleaner
+    
+    RED = '\033[91m'
+    appdata = utils.loadjson('./app.json')
+    access_token = appdata['access_token']
+
+    parser = argparse.ArgumentParser(description='''
+       mxFeed, by Ahmed Maher
+       is tool for displaying minimal Facebook Newsfeed 
+       in the Terminal.
+       I was just playing around.
+       Email: <mx252628@gmail.com>
+      ''')
+    parser.add_argument("-o", "--open", action='store_true', help="open link by post index")
+    parser.add_argument("-t", "--token", action='store_true', help="Renew the access_token")
+    parser.add_argument("-s", "--save", action='store_true', help="save the feed to a file")
+    parser.add_argument("-l", "--load", action='store_true', help="load the saved feed ")
+    parser.add_argument("-p", "--post", type=int, help="print one post")
+    parser.add_argument("-u", "--user", help="show the posts of this name")
+
+    if len(sys.argv)==1:
+        parser.print_help()
+        sys.exit(1)
+    
+    args = parser.parse_args()
+    
+    if args.token:
+        #get an access_token and saving it for future use
+        #[ tell it timeout and becomes not valid ]
+        #TODO store the TTL with it too
+        access_token = token('read_stream')
+        appdata['access_token'] = access_token
+        utils.writejson(appdata, './app.json')
+
+    if args.load:
+        #loading the feed from the newsfeed.json file
+        #insted of loading it from facebook [save bandwidth and time]
+        if args.save:
+            print "You Can't use --load and --save at the same time"
+            sys.exit(0)
+
+        feed = utils.loadjson('./newsfeed.json')
+        view = FeedView(feed['data'])  #create the view for printing
+
+    else:
+        #Getting the newsfeed from the graph API
+        utils.color_print('Please Wait Loading Feed....', RED)
+        graphApi = Graph(access_token)
+        feed = graphApi.newsfeed()
+        view = FeedView(feed['data']) #create the view for printing 
+        
+    if args.post:
+        #print one post only based on it's index in the feed
+        if args.open:
+            #open the post's link in a browser 
+            #insted of printing the post
+            #TODO make it independent from the post argument
+            link = view.sanitize_post(args.post - 1)['link']
+            utils.color_print("Opening Link.....\n", RED)
+            utils.open_link(link)
+        else:
+            #print the post
+            view.print_post(args.post - 1)
+    else:
+        #print the full feed if the post argument is not givin
+        view.print_feed()
+       
+    if args.user:
+        #only print the posts of a specific name
+        indexs = view.filter(args.user)         
+        if len(indexs) == 0:
+            utils.color_print("No posts for this Name", RED)
+        else:
+            message = '{0} posts for {1}\n'.format(len(indexs),args.user)
+            utils.color_print(message, RED)
+
+            for i in indexs:
+                view.print_post(i)
+
+    if args.save:
+        #save the feed in a file [so the --load option can be used in future]
+        utils.writejson(feed, './newsfeed.json')
+
+if __name__ == '__main__':
+    main()
