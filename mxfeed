@@ -12,13 +12,6 @@ import argparse
 import sys
 
 
-def token(permissions):
-    '''get an access_token'''
-    login = FBlogin.login()
-    login.getCode(permissions)
-    res = login.getAccessToken()
-    return res['access_token']
-
 def main():
     #TODO make it cleaner
     
@@ -50,9 +43,7 @@ def main():
         #get an access_token and saving it for future use
         #[ tell it timeout and becomes not valid ]
         #TODO store the TTL with it too
-        access_token = token('read_stream')
-        appdata['access_token'] = access_token
-        utils.writejson(appdata, './app.json')
+        FBlogin.get_token()
 
     if args.load:
         #loading the feed from the newsfeed.json file

@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# it all needs reimplimenting
+# it's a solution for just now
+
 import utils
 
 import BaseHTTPServer as httpserver
@@ -36,9 +39,9 @@ class login(object):
 
     def __init__(self):
         
-        appData = utils.loadjson('./app.json')
-        self.appID = appData['appid']
-        self.appSecret = appData['appsecret']
+        self.appData = utils.loadjson('./app.json')
+        self.appID = self.appData['appid']
+        self.appSecret = self.appData['appsecret']
 
         self.redirURL = 'http://localhost:7777/'
         self.server = httpserver.HTTPServer(('localhost', 7777), httpServHandler)
@@ -70,10 +73,16 @@ class login(object):
         '''extend token's life time'''
         pass
 
-if __name__ == '__main__':
-
-    #for using it directly in the terminal [I've my own uses for this] 
+def get_token():
+    #for using this module in directly from the terminal
+    #I have my resonses for this
     l = login()
     l.getCode('read_stream')
-    token = l.getAccessToken()
-    print token['access_token']
+    res = l.getAccessToken()
+    token = res['access_token']
+    l.appData['access_token'] = token
+    utils.writejson(l.appData, './app.json')
+    sys.exit()
+
+if __name__ == '__main__':
+    get_token()
