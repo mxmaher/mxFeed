@@ -26,6 +26,8 @@ def main():
        I was just playing around.
        Email: <mx252628@gmail.com>
       ''')
+
+    parser.add_argument("-f", "--feed", action='store_true', help="print the full feed")
     parser.add_argument("-o", "--open", action='store_true', help="open link by post index")
     parser.add_argument("-t", "--token", action='store_true', help="Renew the access_token")
     parser.add_argument("-s", "--save", action='store_true', help="save the feed to a file")
@@ -68,13 +70,14 @@ def main():
             #open the post's link in a browser 
             #insted of printing the post
             #TODO make it independent from the post argument
-            link = view.sanitize_post(args.post - 1)['link']
+            link = view.sanitize_post(args.post)['link']
             utils.color_print("Opening Link.....\n", RED)
             utils.open_link(link)
         else:
             #print the post
-            view.print_post(args.post - 1)
-    else:
+            view.print_post(args.post)
+    
+    if args.feed:
         #print the full feed if the post argument is not givin
         view.print_feed()
        
