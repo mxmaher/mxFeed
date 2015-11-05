@@ -28,7 +28,7 @@ def main():
       ''')
 
     parser.add_argument("-f", "--feed", action='store_true', help="print the full feed")
-    parser.add_argument("-o", "--open", action='store_true', help="open link by post index")
+    parser.add_argument("-o", "--open", type=int, help="open link by post index")
     parser.add_argument("-t", "--token", action='store_true', help="Renew the access_token")
     parser.add_argument("-s", "--save", action='store_true', help="save the feed to a file")
     parser.add_argument("-l", "--load", action='store_true', help="load the saved feed ")
@@ -66,16 +66,14 @@ def main():
         
     if args.post:
         #print one post only based on it's index in the feed
-        if args.open:
+        view.print_post(args.post - 1)
+
+    if args.open:
             #open the post's link in a browser 
             #insted of printing the post
-            #TODO make it independent from the post argument
-            link = view.sanitize_post(args.post)['link']
+            link = view.sanitize_post(args.open - 1)['link']
             utils.color_print("Opening Link.....\n", RED)
             utils.open_link(link)
-        else:
-            #print the post
-            view.print_post(args.post)
     
     if args.feed:
         #print the full feed if the post argument is not givin

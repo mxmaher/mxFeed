@@ -63,21 +63,23 @@ class FeedView(object):
         name = PostDict['from']['name']
         post = {'name': name}
 
+        if PostDict.has_key('type'):
+            post['type'] = PostDict['type']
+        else:
+            post['type'] = ''
+
         if PostDict.has_key('message'):
-            message = PostDict['message']
-            post['message'] = message
+            post['message'] = PostDict['message']
         else:
             post['message'] = ''
 
         if PostDict.has_key('link'):
-            link = PostDict['link']
-            post['link'] = link
+            post['link'] = PostDict['link']
         else:
             post['link'] = ''
 
         if PostDict.has_key('description'):
-            des = PostDict['description']
-            post['des'] = des
+            post['des'] = PostDict['description']
         else:
             post['des'] = ''
 
@@ -90,7 +92,7 @@ class FeedView(object):
         post = self.sanitize_post(index)
         width = self.tSize[1] - 3
 
-        utils.color_print('\n ' + post['name'] + '\n', self.colors.PURPLE) 
+        utils.color_print('\n{0} '.format(index + 1) + post['name'] + '  [' + post['type'] + ']\n', self.colors.PURPLE) 
 
         if not post['message'] == '':
             message = self.to_lines(post['message'], width)
@@ -111,6 +113,7 @@ class FeedView(object):
 
     def print_feed(self):
         '''print the full feed'''
+        #TODO print the feed in reverse order insted
         for i in xrange(self.numOfPosts):
             self.print_post(i)
 
