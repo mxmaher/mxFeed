@@ -11,6 +11,7 @@ from urlparse import urlparse
 import requests
 import webbrowser as web
 import simplejson as json
+import sys
 
 class httpServHandler(httpserver.BaseHTTPRequestHandler):
     #FIXME needs rethinking
@@ -39,7 +40,7 @@ class login(object):
 
     def __init__(self):
         
-        self.appData = utils.loadjson('./app.json')
+        self.appData = utils.loadjson('./data/app.json')
         self.appID = self.appData['appid']
         self.appSecret = self.appData['appsecret']
 
@@ -50,9 +51,8 @@ class login(object):
         '''retrive a graph CODE with the wanted permissions
            later used to get an acutall access_token for this permissions
         '''
-        fields = urlencode({'client_id': self.appID, 
-                'redirect_uri': self.redirURL, 'scope': permissions, 
-                                             'response_type': 'code'})
+        fields = urlencode({'client_id': self.appID, 'redirect_uri': self.redirURL, 
+                            'scope': permissions, 'response_type': 'code'})
         
         dialogURL = 'https://www.facebook.com/dialog/oauth?'
         web.open(dialogURL + fields) #TODO: open a headless browser
@@ -60,8 +60,9 @@ class login(object):
 
     def getAccessToken(self):
         '''get the access_token using the early retrived CODE'''
-        fields = urlencode({'client_id': self.appID,
-                 'redirect_uri': self.redirURL,'client_secret': self.appSecret, 'code': str(code)})
+        fields = urlencode({'client_id': self.appID,'redirect_uri': self.redirURL,
+                            'client_secret': self.appSecret, 'code': str(code)})
+        
         #(code) is a global variable defined in the httpServHandler class [in it's do_GET method]
         #TODO FIX this global variable thing
 

@@ -33,7 +33,7 @@ class Graph(object):
     def _check(self, data):
         '''Check for errors returned by the graph API'''
         if 'error' in data:
-            raise ServerSideException(data['error'].get('message'))
+            raise Exception(data['error'].get('message'))
 
     def newsfeed(self):
         '''get the newsfeed for the current authenticated session'''

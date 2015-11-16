@@ -13,87 +13,86 @@ import sys
 
 
 def main():
-    #TODO make it cleaner
-    
+    # TODO make it cleaner
     RED = '\033[91m'
-    appdata = utils.loadjson('./app.json')
+    appdata = utils.loadjson('./data/app.json')
     access_token = appdata['access_token']
 
     parser = argparse.ArgumentParser(description='''
-       mxFeed, by Ahmed Maher
-       is tool for displaying minimal Facebook Newsfeed 
+       This is a tool for displaying a minimal Facebook Newsfeed 
        in the Terminal.
-       I was just playing around.
-       Email: <mx252628@gmail.com>
-      ''')
+       (just playing around)
+       Author: Ahmed Maher Email: <mx252628@gmail.com>
+      '''.format())
 
     parser.add_argument("-f", "--feed", action='store_true', help="print the full feed")
-    parser.add_argument("-o", "--open", type=int, help="open link by post index")
+    parser.add_argument("-o", "--open", type=int, 
+            help="open link by post index")
     parser.add_argument("-t", "--token", action='store_true', help="Renew the access_token")
     parser.add_argument("-s", "--save", action='store_true', help="save the feed to a file")
     parser.add_argument("-l", "--load", action='store_true', help="load the saved feed ")
     parser.add_argument("-p", "--post", type=int, help="print one post")
     parser.add_argument("-u", "--user", help="show the posts of this name")
 
-    if len(sys.argv)==1:
+    if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
     
     args = parser.parse_args()
     
     if args.token:
-        #get an access_token and saving it for future use
-        #[ tell it timeout and becomes not valid ]
-        #TODO store the TTL with it too
+        # get an access_token and saving it for future use
+        # [ tell it's timeout and becomes not valid ]
+        # TODO store the TTL with it too
         FBlogin.get_token()
 
     if args.load:
-        #loading the feed from the newsfeed.json file
-        #insted of loading it from facebook [save bandwidth and time]
+        # loading the feed from the newsfeed.json file
+        # insted of loading it from facebook [save bandwidth and time]
         if args.save:
             print "You Can't use --load and --save at the same time"
             sys.exit(0)
 
-        feed = utils.loadjson('./newsfeed.json')
-        view = FeedView(feed['data'])  #create the view for printing
+        feed = utils.loadjson('./data/newsfeed.json')
+        view = FeedView(feed['data'])  # create the view for printing
 
     else:
-        #Getting the newsfeed from the graph API
+        # Getting the newsfeed from the graph API
         utils.color_print('Please Wait Loading Feed....', RED)
         graphApi = Graph(access_token)
         feed = graphApi.newsfeed()
-        view = FeedView(feed['data']) #create the view for printing 
+        view = FeedView(feed['data'])  # create the view for printing 
         
     if args.post:
-        #print one post only based on it's index in the feed
+        # print one post only based on it's index in the feed
         view.print_post(args.post - 1)
 
     if args.open:
-            #open the post's link in a browser 
-            #insted of printing the post
+            # open the post's link in a browser 
+            # insted of printing the post
             link = view.sanitize_post(args.open - 1)['link']
             utils.color_print("Opening Link.....\n", RED)
             utils.open_link(link)
     
     if args.feed:
-        #print the full feed if the post argument is not givin
+        # print the full feed if the post argument is not givin
         view.print_feed()
        
     if args.user:
-        #only print the posts of a specific name
+        # only print the posts of a specific name
         indexs = view.filter(args.user)         
         if len(indexs) == 0:
             utils.color_print("No posts for this Name", RED)
         else:
-            message = '{0} posts for {1}\n'.format(len(indexs),args.user)
+            message = '{0} posts for {1}\n'.format(len(indexs), args.user)
             utils.color_print(message, RED)
 
             for i in indexs:
                 view.print_post(i)
 
     if args.save:
-        #save the feed in a file [so the --load option can be used in future]
-        utils.writejson(feed, './newsfeed.json')
+        # save the feed in a file [so the --load option can be used in future]
+        utils.writejson(feed, './data/newsfeed.json')
 
 if __name__ == '__main__':
     main()
