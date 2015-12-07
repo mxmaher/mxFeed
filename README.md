@@ -3,7 +3,7 @@
 
 Display your Facebook Newsfeed in the Terminal
 
-Notes:
+##Notes:
   * You will need to get an AppID and AppSecret from Facebook
     and store them in a json file 'app.json' for authenticating with the graphAPI
 
@@ -17,7 +17,7 @@ Notes:
       "access_token": ""
   }```
 
-#Usage example:
+###Usage example:
 
   * `mxfeed -sf`
      prints the full retrived Newsfeed and saves it for future viewing
@@ -34,6 +34,6 @@ Notes:
   * `mxfeed -t`
    get an access_token from Facebook
 
-#screenshot:
+###screenshot:
 
 ![screenshot](/screenshots/UsageExample.png)
