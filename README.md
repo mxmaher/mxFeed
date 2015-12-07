@@ -1,21 +1,21 @@
-mxFeed
+#mxFeed
 =====
 
 Display your Facebook Newsfeed in the Terminal
 
-#Notes:
+Notes:
   * You will need to get an AppID and AppSecret from Facebook
     and store them in a json file 'app.json' for authenticating with the graphAPI
 
   * I haven't included my _app.json_ file in this repository
     for security issues
     but it looks like this
-    ```
-    {
+
+  ```{
       "appsecret": "put your AppSecret here",
       "appid": "put your AppID here",
       "access_token": ""
-    }```
+  }```
 
 #Usage example:
 
