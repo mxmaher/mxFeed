@@ -12,11 +12,13 @@ Display your Facebook Newsfeed in the Terminal
     for security issues
     but it looks like this
 
-  ```{
+  ```javascript
+  {
       "appsecret": "put your AppSecret here",
       "appid": "put your AppID here",
       "access_token": ""
-  }```
+  }
+  ```
 
 ###Usage example:
 
