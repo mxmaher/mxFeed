@@ -42,3 +42,15 @@ class Graph(object):
         feed = self._get(url=Url)
         return feed
 
+    def get_group_feed(self, group):
+        '''get the newsfeed of a group'''
+
+        Url = BASE_URL + 'me/groups//{0}/'.format(group)
+        res = self._get(url=Url)
+        id = res['data'][0]['id']
+
+        Url2 = BASE_URL + '{0}/feed'.format(id)
+        return self._get(url=Url2)
+
+
+
