@@ -33,6 +33,8 @@ def main():
     parser.add_argument("-l", "--load", action='store_true', help="load the saved feed ")
     parser.add_argument("-p", "--post", type=int, help="print one post")
     parser.add_argument("-u", "--user", help="show the posts of this name")
+    parser.add_argument("-g", "--group", help="get group's newsfeed")
+
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -60,7 +62,10 @@ def main():
         # Getting the newsfeed from the graph API
         utils.color_print('Please Wait Loading Feed....', RED)
         graphApi = Graph(access_token)
-        feed = graphApi.newsfeed()
+        if args.group:
+            feed = graphApi.get_group_feed(args.group)
+        else:
+            feed = graphApi.newsfeed()
         view = FeedView(feed['data'])  # create the view for printing 
         
     if args.post:

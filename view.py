@@ -3,7 +3,7 @@
 import utils
 
 class Colors(object): 
-    '''Colors definition for terminal printing'''
+    """Colors definition for terminal printing"""
     PURPLE = '\033[95m'
     BLUE = '\033[94m'
     GREEN = '\033[92m'
@@ -14,7 +14,7 @@ class Colors(object):
 class FeedView(object):
 
     def __init__(self, feed):
-        '''printing a minimal facebook feed in the terminal'''
+        """printing a minimal facebook feed in the terminal"""
         
         self.data = feed
         self.numOfPosts = len(self.data)
@@ -22,7 +22,7 @@ class FeedView(object):
         self.colors = Colors()
     
     def to_lines(self, text, width=80, sur=2):
-        '''breaks text into lines that fits the givin width'''
+        """breaks text into lines that fits the givin width"""
         #TODO needs more work
         text = text.split()
         string = ''
@@ -40,8 +40,7 @@ class FeedView(object):
         return lines
 
     def print_link(self, link, indent=4):
-        '''links can get very long so make them short 
-        just for printing'''
+        """links can get very long so make them short just for printing"""
         
         max_len = self.tSize[1] - 25
         nlink = ''
@@ -56,8 +55,7 @@ class FeedView(object):
         utils.color_print(ind + nlink, self.colors.AQUA)
 
     def sanitize_post(self, index):
-        '''sanitize the content of the post
-        and return just the needed fields'''
+        """sanitize the content of the post and return just the needed fields"""
         
         PostDict = self.data[index]
         name = PostDict['from']['name']
@@ -86,7 +84,7 @@ class FeedView(object):
         return post
 
     def print_post(self, index):
-        '''print a post by it's index in the feed'''
+        """print a post by it's index in the feed"""
 
         #FIXME needs more work 
         post = self.sanitize_post(index)
@@ -112,13 +110,13 @@ class FeedView(object):
         #print '-' * (width + 3)
 
     def print_feed(self):
-        '''print the full feed'''
+        """print the full feed"""
         #TODO print the feed in reverse order insted
         for i in xrange(self.numOfPosts):
             self.print_post(i)
 
     def filter(self, name):
-        '''return the indexs of posts that's from this name'''
+        """return the indexs of posts that's from this name"""
         indexs = []
         for i in range(self.numOfPosts):
             post = self.sanitize_post(i)
