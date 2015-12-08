@@ -1,7 +1,7 @@
 #mxFeed
 ---------
 
-Display your Facebook Newsfeed in the Terminal
+Command line tool for displaying a minimal Facebook Newsfeed in the Terminal.
 
 ###Notes:
 
